@@ -13,7 +13,13 @@ else
 fi
 
 
-yum_install MariaDB-server MariaDB-client MariaDB-common MariaDB-compat MariaDB-shared
+if [[ "$OS" = "rocky9" ]]; then
+  # Rocky 9는 MariaDB-compat 패키지가 제공되지 않음
+  yum_install MariaDB-server MariaDB-client MariaDB-common MariaDB-shared
+else
+  # Rocky 8, CentOS 7 이하
+  yum_install MariaDB-server MariaDB-client MariaDB-common MariaDB-compat MariaDB-shared
+fi
 
 # 메모리 선택 -> MariaDB 10.3 부터 미지원
 #if [ ${1} = "4G" ]; then
