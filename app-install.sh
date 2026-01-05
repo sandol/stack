@@ -81,7 +81,8 @@ function show_usage
   echo -n "  "
   outputInfo  "--php"
   echo "       (기본 : ${USR_BIN_PHP_VERSION}) PHP 버전을 [ 53 54 55 56 56 70 71 72 73 74 80 81 82 83 84 ] 형식으로 하나만 입력하세요."
-  echo "                Tip) Laravel 은 82, 그누보드4 는 53 등 프로그램에 따라 적절히 선택하세요."
+  echo "                Tip) Laravel 은 82, 그누보드4 는 53, phpMyAdmin은 81 이상 권장 등 프로그램에 따라 적절히 선택하세요."
+  echo "                     Rocky Linux 9 에서는 PHP 8.1 이상 사용을 권장합니다."
   echo "                     ./status.sh 명령을 통해 현재 서버에 설치된 PHP 버전을 확인할 수 있습니다."
   echo
 
