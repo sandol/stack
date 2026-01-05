@@ -17,6 +17,7 @@ function show_usage
   echo
   echo "Example:"
   outputComment "  ${0} --user=php79 --password='php79!@'"
+  outputComment "  ${0} --user=php79 --password='php79!@' --sftp-only"
   echo
 
   echo
@@ -30,6 +31,12 @@ function show_usage
   echo -n "  "
   outputInfo  "--password"
   echo "  비밀번호.  특수문자 사용시엔 반드시 작은 따옴표(')로 감싸주어야 합니다."
+  echo
+
+  echo -n "  "
+  outputInfo  "--sftp-only"
+  echo "  (선택) SFTP 전용 사용자로 생성합니다. SSH 터미널 접속은 불가하며, /home/아이디/master 디렉토리만 접근 가능합니다."
+  echo "          보안성이 높아 웹 호스팅 환경에 적합합니다."
   echo
 }
 
@@ -45,6 +52,7 @@ if [ -z ${1} ]; then
   show_usage
   exit
 else
+  INPUT_SFTP_ONLY=0
   for i in "${@}"
   do
   case ${i} in
@@ -59,6 +67,10 @@ else
     --skip-guide-app-install=*)
       shift
       GUIDE_APP_INSTALL="${i#*=}"
+      ;;
+    --sftp-only)
+      shift
+      INPUT_SFTP_ONLY=1
       ;;
     -h | --help )
       show_usage
@@ -125,4 +137,11 @@ if [ -z ${GUIDE_APP_INSTALL} ]; then
   echo
   echo "  앱 자동 설치) ./app-install.sh 으로 원하는 앱을 쉽게 설치하실 수 있습니다."
   echo "  앱 수동 설치) ./apps/laravel51/template-server.conf 예제를 참고하여,  /etc/nginx/conf.d/${INPUT_USER}.conf 설정 파일을 생성하면 됩니다."
+fi
+
+# SFTP 전용 설정
+if [ ${INPUT_SFTP_ONLY} = "1" ]; then
+  echo
+  notice "SFTP 전용 사용자로 설정합니다."
+  ${STACK_ROOT}/scripts/sftp-setup.sh --user=${INPUT_USER}
 fi

@@ -99,6 +99,12 @@ function show_usage
   echo "                      앱 설치가 완료된 마지막 단계에서 발급을 시도하므로, 발급 실패시에도 앱 사용에는 문제없습니다."
   echo "                      앱 설치후에도 ssl-install.sh 명령을 통해 별도 발급 가능합니다."
   echo
+
+  echo -n "  "
+  outputInfo  "--sftp-only"
+  echo "       (선택) SFTP 전용 사용자로 생성합니다. SSH 터미널 접속은 불가하며, /home/아이디/master만 접근 가능합니다."
+  echo "                Tip) 보안성이 높아 웹 호스팅 환경에 적합합니다. FileZilla 등 SFTP 클라이언트로 접속하세요."
+  echo
 }
 
 function input_abort
@@ -115,6 +121,7 @@ if [ -z ${1} ]; then
 else
   INPUT_SKIP_INSTALL=0
   INPUT_SSL=0
+  INPUT_SFTP_ONLY=0
   for i in "${@}"
   do
     case $i in
@@ -152,6 +159,10 @@ else
     --ssl)
       shift
       INPUT_SSL=1
+      ;;
+    --sftp-only)
+      shift
+      INPUT_SFTP_ONLY=1
       ;;
     -h | --help )
       show_usage
@@ -225,7 +236,12 @@ if [ "${?}" != "0" ]; then
 fi
 
 # 비밀번호도 입력받아야 하므로, 계정 추가 작업도 일괄 처리
-./user-add.sh --user=${INPUT_USER} --password=${INPUT_PASSWORD} --skip-guide-app-install
+if [ ${INPUT_SFTP_ONLY} = "1" ]; then
+  ./user-add.sh --user=${INPUT_USER} --password=${INPUT_PASSWORD} --skip-guide-app-install --sftp-only
+else
+  ./user-add.sh --user=${INPUT_USER} --password=${INPUT_PASSWORD} --skip-guide-app-install
+fi
+
 if [ "${?}" != "0" ]; then
   abort "시스템 계정 추가 작업이 실패하였습니다."
 fi

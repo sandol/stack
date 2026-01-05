@@ -74,7 +74,15 @@ cd /root/stack
 ./user-add.sh --user=php79 --password='php79!@'
 ```
 
+- SFTP 전용 사용자 생성 (SSH 터미널 접속 차단, /home/아이디/master만 접근 가능)
+
+```bash
+./user-add.sh --user=php79 --password='php79!@' --sftp-only
+```
+
 > 경고) 비밀번호는 반드시 변경하여 사용하세요.  특히 시스템 계정(SSH/SFTP)이 생성되므로, 단순한 비밀번호는 절대 안됩니다!!!
+>
+> SFTP 전용 사용자 상세 가이드: [docs/SFTP-SETUP-GUIDE.md](docs/SFTP-SETUP-GUIDE.md)
 
 
 ### status.sh
