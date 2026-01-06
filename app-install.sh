@@ -252,6 +252,36 @@ if [ ! -d "/home/${INPUT_USER}" ]; then
   input_abort "/home/${INPUT_USER} 디렉토리가 존재하지 않습니다.   실제 존재하는 시스템 계정인지 확인해주세요."
 fi
 
+# nginx 설정에 필요한 디렉토리 사전 생성 (nginx 설정 테스트를 위해 필수)
+outputComment "# nginx 설정에 필요한 디렉토리를 생성합니다."
+echo
+
+# master 디렉토리 생성
+if [ ! -d "/home/${INPUT_USER}/master" ]; then
+  mkdir -p "/home/${INPUT_USER}/master/public"
+  mkdir -p "/home/${INPUT_USER}/master/logs"
+
+  # SFTP 전용 사용자의 경우 홈 디렉토리 권한이 나중에 변경될 예정이므로,
+  # 일단 일반 사용자가 접근 가능하도록 설정
+  if [ ${INPUT_SFTP_ONLY} = "1" ]; then
+    chown ${INPUT_USER}:${INPUT_USER} "/home/${INPUT_USER}/master"
+    chmod 755 "/home/${INPUT_USER}/master"
+  else
+    chown -R ${INPUT_USER}:${INPUT_USER} "/home/${INPUT_USER}/master"
+  fi
+
+  echo "  - /home/${INPUT_USER}/master 디렉토리 생성 완료"
+fi
+
+# logs 디렉토리 생성 (nginx 설정에서 참조)
+if [ ! -d "/home/${INPUT_USER}/master/logs" ]; then
+  mkdir -p "/home/${INPUT_USER}/master/logs"
+  chown -R ${INPUT_USER}:${INPUT_USER} "/home/${INPUT_USER}/master/logs"
+  echo "  - /home/${INPUT_USER}/master/logs 디렉토리 생성 완료"
+fi
+
+echo
+
 # nginx 설정 추가
 notice "nginx 에 새로운 사이트 설정을 추가합니다."
 
